@@ -28,7 +28,7 @@ class Wall(GenericWall):
 # pass thru going up wall
 class Platform(GenericWall):
     def __init__(self, x, y):
-        super().__init__(x, y, 50, 15, Color(0xff0000, 1.0))
+        super().__init__(x, y, 50, 15, Color(0x191970, 1.0))
     
 # super class for anything that falls and lands or bumps into walls
 class GravityActor(Sprite):
@@ -168,6 +168,13 @@ class Enemy(GravityActor):
             if self.resting:
                 self.vx = 0
                 
+    def step(self):
+        super().step()
+        if key == "shift key":
+            Bolt(self.direction, 
+                 self.x+self.width,
+                 self.y+10,
+                 self.app)
 
 # The player class. only one instance of this is allowed.
 class Player(GravityActor):
