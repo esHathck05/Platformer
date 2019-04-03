@@ -105,7 +105,7 @@ class Bolt(Sprite):
         selfdestruct = False
         for target in hits:
             # destroy players and other bolts
-            if isinstance(target, Player) or isinstance(target, Bolt):
+            if isinstance(target, Player, Enemy) or isinstance(target, Bolt):
                 self.app.killMe(target)
             # self destruct on anything but a Turret
             if not isinstance(target, Turret):
@@ -139,6 +139,14 @@ class Enemy(GravityActor):
         w = 15
         h = 30
         super().__init__(x-w//2, y-h//2, w, h, Color(0xff0000, 1.0), app)
+
+    def step(self):
+        # look for spring collisions
+        springs = self.collidingWithSprites(Spring)
+        if len(springs):
+            self.vy = -15
+            self.resting = False
+        super().step()
         
     def move(self, key):
         if key == "a":
@@ -214,6 +222,7 @@ class Platformer(App):
     def __init__(self):
         super().__init__()
         self.p = None
+        self.e = None
         self.pos = (0,0)
         self.listenKeyEvent("keydown", "n", self.newWall)
         self.listenKeyEvent("keydown", "p", self.newPlayer)
@@ -265,14 +274,20 @@ class Platformer(App):
     def moveKey(self, event):
         if self.p:
             self.p.move(event.key)
+        if self.e:
+            self.e.move(event.key)
         
     def stopMoveKey(self, event):
         if self.p:
             self.p.stopMove(event.key)
+        if self.e:
+            self.e.stopMove(event.key)
         
     def step(self):
         if self.p:
             self.p.step()
+        if self.e:
+            self.e.step()
         for s in self.FallingSprings:
             s.step()
         for t in Platformer.getSpritesbyClass(Turret):
@@ -288,12 +303,14 @@ class Platformer(App):
             self.FallingSprings.remove(obj)
         elif obj == self.p:
             self.p = None
+        elif obj == self.e:
+            self.e = None
         if not obj in self.KillList:
             self.KillList.append(obj)
         
 # Display some hints about how to play!
 print("Move your mouse cursor around the graphics screen and:")
-print("w: create a wall block")
+print("n: create a wall block")
 print("s: create a spring")
 print("f: create a floor")
 print("l: create a laser turret")
