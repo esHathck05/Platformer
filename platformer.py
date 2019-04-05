@@ -1,8 +1,8 @@
 """
 platformer.py
-Author: 
-Credit: 
-Assignment:
+Author: Esther Hacker
+Credit: N/A
+Assignment: Platformer
 Write and submit a program that implements the sandbox platformer game:
 https://github.com/HHS-IntroProgramming/Platformer
 """
@@ -29,6 +29,8 @@ class Wall(GenericWall):
 class Platform(GenericWall):
     def __init__(self, x, y):
         super().__init__(x, y, 50, 15, Color(0x191970, 1.0))
+        
+lifecount = {'Player':3, 'Enemy':3}
     
 # super class for anything that falls and lands or bumps into walls
 class GravityActor(Sprite):
@@ -167,7 +169,14 @@ class Enemy(GravityActor):
         if key == "a" or key == "d":
             if self.resting:
                 self.vx = 0
+    
+    def step(self):
+        if self.x > self.app.width or self.x < 0:
+            self.app.killMe(self)
+            lifecount['Enemy'] = lifecount['Enemy'] - 1
+            print(lifecount['Enemy'])
                 
+"""
     def step(self):
         super().step()
         if key == "shift key":
@@ -175,6 +184,7 @@ class Enemy(GravityActor):
                  self.x+self.width,
                  self.y+10,
                  self.app)
+"""
 
 # The player class. only one instance of this is allowed.
 class Player(GravityActor):
