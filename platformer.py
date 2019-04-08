@@ -149,6 +149,16 @@ class Enemy(GravityActor):
             self.vy = -15
             self.resting = False
         super().step()
+        if self.x > self.app.width or self.x < 0:
+            self.app.killMe(self)
+            lifecount['Enemy'] = lifecount['Enemy'] - 1
+            print("Enemy Lives Left: " + str(lifecount['Enemy']))
+        if self.y > self.app.height:
+            self.app.killMe(self)
+            lifecount['Enemy'] = lifecount['Enemy'] - 1
+            print("Enemy Lives Left: " + str(lifecount['Enemy']))
+        if lifecount['Enemy'] == 0:
+            print("Player wins!")
         
     def move(self, key):
         if key == "a":
@@ -169,22 +179,6 @@ class Enemy(GravityActor):
         if key == "a" or key == "d":
             if self.resting:
                 self.vx = 0
-    
-    def step(self):
-        if self.x > self.app.width or self.x < 0:
-            self.app.killMe(self)
-            lifecount['Enemy'] = lifecount['Enemy'] - 1
-            print(lifecount['Enemy'])
-                
-"""
-    def step(self):
-        super().step()
-        if key == "shift key":
-            Bolt(self.direction, 
-                 self.x+self.width,
-                 self.y+10,
-                 self.app)
-"""
 
 # The player class. only one instance of this is allowed.
 class Player(GravityActor):
@@ -200,6 +194,16 @@ class Player(GravityActor):
             self.vy = -15
             self.resting = False
         super().step()
+        if self.x > self.app.width or self.x < 0:
+            self.app.killMe(self)
+            lifecount['Player'] = lifecount['Player'] - 1
+            print("Player Lives Left: " + str(lifecount['Player']))
+        if self.y > self.app.height:
+            self.app.killMe(self)
+            lifecount['Player'] = lifecount['Player'] - 1
+            print("Player Lives Left: " + str(lifecount['Player']))
+        if lifecount['Player'] == 0:
+            print("Enemy wins!")
         
     def move(self, key):
         if key == "left arrow":
@@ -242,9 +246,9 @@ class Platformer(App):
         self.e = None
         self.pos = (0,0)
         self.listenKeyEvent("keydown", "n", self.newWall)
+        self.listenKeyEvent("keydown", "f", self.newFloor)
         self.listenKeyEvent("keydown", "p", self.newPlayer)
         self.listenKeyEvent("keydown", "e", self.newEnemy)
-        self.listenKeyEvent("keydown", "f", self.newFloor)
         self.listenKeyEvent("keydown", "left arrow", self.moveKey)
         self.listenKeyEvent("keydown", "right arrow", self.moveKey)
         self.listenKeyEvent("keydown", "up arrow", self.moveKey)
@@ -260,6 +264,7 @@ class Platformer(App):
         self.listenMouseEvent("mousemove", self.moveMouse)
         self.FallingSprings = []
         self.KillList = []
+            
 
     def moveMouse(self, event):
         self.pos = (event.x, event.y)
@@ -268,16 +273,18 @@ class Platformer(App):
         Wall(self.pos[0], self.pos[1])
         
     def newPlayer(self, event):
-        for p in Platformer.getSpritesbyClass(Player):
-            p.destroy()
-            self.p = None
-        self.p = Player(self.pos[0], self.pos[1], self)
+        if lifecount['Player'] != 0 and lifecount['Enemy'] != 0:
+            for p in Platformer.getSpritesbyClass(Player):
+                p.destroy()
+                self.p = None
+            self.p = Player(self.pos[0], self.pos[1], self)
         
     def newEnemy(self, event):
-        for e in Platformer.getSpritesbyClass(Enemy):
-            e.destroy()
-            self.e = None
-        self.e = Enemy(self.pos[0], self.pos[1], self)
+        if lifecount['Player'] != 0 and lifecount['Enemy'] != 0:
+            for e in Platformer.getSpritesbyClass(Enemy):
+                e.destroy()
+                self.e = None
+            self.e = Enemy(self.pos[0], self.pos[1], self)
     
     def newSpring(self, event):
         self.FallingSprings.append(Spring(self.pos[0], self.pos[1], self))
