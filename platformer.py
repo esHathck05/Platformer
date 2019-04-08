@@ -107,8 +107,14 @@ class Bolt(Sprite):
         selfdestruct = False
         for target in hits:
             # destroy players and other bolts
-            if isinstance(target, Player, Enemy) or isinstance(target, Bolt):
+            if isinstance(target, Player) or isinstance(target, Bolt):
                 self.app.killMe(target)
+                lifecount['Player'] = lifecount['Player'] - 1
+                print("Player Lives Left: " + str(lifecount['Player']))
+            if isinstance(target, Enemy) or isinstance(target, Bolt):
+                self.app.killMe(target)
+                lifecount['Enemy'] = lifecount['Enemy'] - 1
+                print("Enemy Lives Left: " + str(lifecount['Enemy']))
             # self destruct on anything but a Turret
             if not isinstance(target, Turret):
                 selfdestruct = True
@@ -247,6 +253,8 @@ class Platformer(App):
         self.pos = (0,0)
         self.listenKeyEvent("keydown", "n", self.newWall)
         self.listenKeyEvent("keydown", "f", self.newFloor)
+        self.listenKeyEvent("keydown", "s", self.newSpring)
+        self.listenKeyEvent("keydown", "l", self.newLaser)
         self.listenKeyEvent("keydown", "p", self.newPlayer)
         self.listenKeyEvent("keydown", "e", self.newEnemy)
         self.listenKeyEvent("keydown", "left arrow", self.moveKey)
@@ -340,6 +348,8 @@ print("f: create a floor")
 print("l: create a laser turret")
 print("p: create a player")
 print("left, right, up arrow: control player movement")
+print("Press space to start the game!")
+
         
 # Execute the application by instantiate and run        
 app = Platformer()
