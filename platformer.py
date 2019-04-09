@@ -7,7 +7,9 @@ Write and submit a program that implements the sandbox platformer game:
 https://github.com/HHS-IntroProgramming/Platformer
 """
 from ggame import App, Sprite, RectangleAsset, LineStyle, Color
-   
+
+Gamestart = False
+
 # A super wall class for wall-ish behaviors
 class GenericWall(Sprite):
     def __init__(self, x, y, w, h, color):
@@ -251,12 +253,7 @@ class Platformer(App):
         self.p = None
         self.e = None
         self.pos = (0,0)
-        self.listenKeyEvent("keydown", "n", self.newWall)
-        self.listenKeyEvent("keydown", "f", self.newFloor)
-        self.listenKeyEvent("keydown", "s", self.newSpring)
-        self.listenKeyEvent("keydown", "l", self.newLaser)
-        self.listenKeyEvent("keydown", "p", self.newPlayer)
-        self.listenKeyEvent("keydown", "e", self.newEnemy)
+        self.listenKeyEvent("keydown", "m", self.newGamestart)
         self.listenKeyEvent("keydown", "left arrow", self.moveKey)
         self.listenKeyEvent("keydown", "right arrow", self.moveKey)
         self.listenKeyEvent("keydown", "up arrow", self.moveKey)
@@ -272,7 +269,19 @@ class Platformer(App):
         self.listenMouseEvent("mousemove", self.moveMouse)
         self.FallingSprings = []
         self.KillList = []
-            
+        if Gamestart != True:
+            self.listenKeyEvent("keydown", "n", self.newWall)
+            self.listenKeyEvent("keydown", "f", self.newFloor)
+            self.listenKeyEvent("keydown", "s", self.newSpring)
+            self.listenKeyEvent("keydown", "l", self.newLaser)
+        if Gamestart == True:
+            self.listenKeyEvent("keydown", "p", self.newPlayer)
+            self.listenKeyEvent("keydown", "e", self.newEnemy)
+                
+    def newGamestart(self, event):
+        global newGamestart
+        Gamestart = True
+        print("Start game")
 
     def moveMouse(self, event):
         self.pos = (event.x, event.y)
@@ -348,7 +357,8 @@ print("f: create a floor")
 print("l: create a laser turret")
 print("p: create a player")
 print("left, right, up arrow: control player movement")
-print("Press space to start the game!")
+print("a, d, w: control enemy movement")
+print("Build the map and press m to start the game")
 
         
 # Execute the application by instantiate and run        
