@@ -267,13 +267,13 @@ class Platformer(App):
         self.listenKeyEvent("keyup", "d", self.stopMoveKey)
         self.listenKeyEvent("keyup", "w", self.stopMoveKey)
         self.listenMouseEvent("mousemove", self.moveMouse)
-        self.FallingSprings = []
-        self.KillList = []
         if Gamestart != True:
             self.listenKeyEvent("keydown", "n", self.newWall)
             self.listenKeyEvent("keydown", "f", self.newFloor)
             self.listenKeyEvent("keydown", "s", self.newSpring)
             self.listenKeyEvent("keydown", "l", self.newLaser)
+        self.FallingSprings = []
+        self.KillList = []
                 
     def newGamestart(self, event):
         global newGamestart
