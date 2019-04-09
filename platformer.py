@@ -274,14 +274,14 @@ class Platformer(App):
             self.listenKeyEvent("keydown", "f", self.newFloor)
             self.listenKeyEvent("keydown", "s", self.newSpring)
             self.listenKeyEvent("keydown", "l", self.newLaser)
-        if Gamestart == True:
-            self.listenKeyEvent("keydown", "p", self.newPlayer)
-            self.listenKeyEvent("keydown", "e", self.newEnemy)
                 
     def newGamestart(self, event):
         global newGamestart
         Gamestart = True
-        print("Start game")
+        print("Start game!")
+        if Gamestart == True:
+            self.listenKeyEvent("keydown", "p", self.newPlayer)
+            self.listenKeyEvent("keydown", "e", self.newEnemy)
 
     def moveMouse(self, event):
         self.pos = (event.x, event.y)
@@ -358,7 +358,7 @@ print("l: create a laser turret")
 print("p: create a player")
 print("left, right, up arrow: control player movement")
 print("a, d, w: control enemy movement")
-print("Build the map and press m to start the game")
+print("Build the map and press m to start!")
 
         
 # Execute the application by instantiate and run        
